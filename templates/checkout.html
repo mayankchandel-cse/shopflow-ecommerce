@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Checkout — ShopFlow{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<p class="note">Demo checkout — no real payment is taken. Choose Cash on Delivery or UPI (demo).</p>
+<div class="cols">
+<form class="form" method="post" action="{{ url_for('checkout') }}">
+  <label>Full name *<input type="text" name="name" required value="{{ user.name if user }}"></label>
+  <label>Email *<input type="email" name="email" required value="{{ user.email if user }}"></label>
+  <label>Phone<input type="tel" name="phone" placeholder="98765 43210"></label>
+  <label>Address *<textarea name="address" required rows="3"></textarea></label>
+  <label>City *<input type="text" name="city" required></label>
+  <label>PIN code *<input type="text" name="pincode" required pattern="[0-9]{6}" placeholder="140413"></label>
+  <label>Payment method
+    <select name="payment_method">
+      <option>Cash on Delivery</option>
+      <option>UPI (Demo)</option>
+      <option>Card (Demo)</option>
+    </select>
+  </label>
+  <button class="btn" type="submit">Place Order — {{ inr(total) }}</button>
+</form>
+<aside class="summary">
+  <h2>Order summary</h2>
+  {% for item in items %}
+  <p>{{ item.qty }} × {{ item.product.name }} <span>{{ inr(item.subtotal) }}</span></p>
+  {% endfor %}
+  <hr>
+  <p><strong>Total {{ inr(total) }}</strong></p>
+  <p class="muted">Free delivery on all orders in this demo.</p>
+</aside>
+</div>
+{% endblock %}

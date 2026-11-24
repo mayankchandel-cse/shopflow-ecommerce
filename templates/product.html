@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — ShopFlow{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('index') }}">← Back to shop</a>
+<div class="detail">
+  <div class="thumb big" style="--hue: {{ (product.id * 47) % 360 }}deg">
+    <span class="thumb-text">{{ product.name[:2] | upper }}</span>
+  </div>
+  <div>
+    <span class="cat">{{ product.category }}</span>
+    <h1>{{ product.name }}</h1>
+    <p class="rating">★ {{ product.rating }} / 5</p>
+    <p class="price big">{{ inr(product.price) }} {% if product.old_price %}<s>{{ inr(product.old_price) }}</s>{% endif %}</p>
+    <p>{{ product.description }}</p>
+    <p class="stock">{{ product.stock }} in stock</p>
+    <form class="buy" action="{{ url_for('cart_add', product_id=product.id) }}" method="post">
+      <label>Qty <input type="number" name="qty" value="1" min="1" max="{{ product.stock }}"></label>
+      <input type="hidden" name="next" value="{{ url_for('cart') }}">
+      <button class="btn" type="submit" {% if product.stock == 0 %}disabled{% endif %}>Add to Cart</button>
+    </form>
+  </div>
+</div>
+{% if related %}
+<h2>You may also like</h2>
+<div class="grid">
+  {% for p in related %}
+  <article class="card">
+    <a class="thumb" href="{{ url_for('product_detail', product_id=p.id) }}" style="--hue: {{ (p.id * 47) % 360 }}deg"><span class="thumb-text">{{ p.name[:2] | upper }}</span></a>
+    <div class="card-body">
+      <h3><a href="{{ url_for('product_detail', product_id=p.id) }}">{{ p.name }}</a></h3>
+      <p class="price">{{ inr(p.price) }}</p>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

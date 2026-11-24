@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Your Cart — ShopFlow{% endblock %}
+{% block content %}
+<h1>Your Cart</h1>
+{% if items %}
+<table class="table">
+  <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+  <tbody>
+  {% for item in items %}
+    <tr>
+      <td><a href="{{ url_for('product_detail', product_id=item.product.id) }}">{{ item.product.name }}</a></td>
+      <td>{{ inr(item.product.price) }}</td>
+      <td>
+        <form action="{{ url_for('cart_update', product_id=item.product.id) }}" method="post" class="inline">
+          <input type="number" name="qty" value="{{ item.qty }}" min="0" max="{{ item.product.stock }}">
+          <button class="btn small ghost" type="submit">Update</button>
+        </form>
+      </td>
+      <td>{{ inr(item.subtotal) }}</td>
+      <td>
+        <form action="{{ url_for('cart_remove', product_id=item.product.id) }}" method="post" class="inline">
+          <button class="btn small danger" type="submit">Remove</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p class="total">Total: <strong>{{ inr(total) }}</strong></p>
+<p><a class="btn" href="{{ url_for('checkout') }}">Proceed to Checkout →</a>
+<a class="btn ghost" href="{{ url_for('index') }}">Continue Shopping</a></p>
+{% else %}
+<p class="empty">Your cart is empty. <a href="{{ url_for('index') }}">Browse products</a></p>
+{% endif %}
+{% endblock %}

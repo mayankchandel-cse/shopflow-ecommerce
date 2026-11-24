@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Manage Products — ShopFlow{% endblock %}
+{% block content %}
+<h1>Manage Products</h1>
+<p><a class="btn" href="{{ url_for('admin_product_new') }}">+ Add Product</a>
+<a class="btn ghost" href="{{ url_for('admin_dashboard') }}">← Dashboard</a></p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+  <tbody>
+  {% for p in products %}
+    <tr>
+      <td>{{ p.id }}</td><td>{{ p.name }}</td><td>{{ p.category }}</td>
+      <td>{{ inr(p.price) }}</td><td>{{ p.stock }}</td>
+      <td>
+        <a href="{{ url_for('admin_product_edit', product_id=p.id) }}">Edit</a> |
+        <form action="{{ url_for('admin_product_delete', product_id=p.id) }}" method="post" class="inline" onsubmit="return confirm('Delete this product?')">
+          <button class="link danger" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

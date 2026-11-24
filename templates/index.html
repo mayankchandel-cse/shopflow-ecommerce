@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Everything you need, delivered to your door.</h1>
+  <p>Electronics, fashion, home &amp; fitness — quality products at honest prices, with cash on delivery.</p>
+</section>
+<form class="filters" method="get" action="{{ url_for('index') }}">
+  <input type="hidden" name="q" value="{{ q }}">
+  <select name="category" onchange="this.form.submit()">
+    <option value="">All categories</option>
+    {% for c in categories %}
+      <option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  <select name="sort" onchange="this.form.submit()">
+    <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+    <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: low to high</option>
+    <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: high to low</option>
+    <option value="rating" {% if sort == 'rating' %}selected{% endif %}>Top rated</option>
+    <option value="name" {% if sort == 'name' %}selected{% endif %}>Name A–Z</option>
+  </select>
+  {% if q or category %}<a class="btn ghost" href="{{ url_for('index') }}">Clear</a>{% endif %}
+</form>
+<p class="count">{{ products|length }} product{{ 's' if products|length != 1 }} found{% if q %} for “{{ q }}”{% endif %}</p>
+{% if products %}
+<div class="grid">
+  {% for p in products %}
+  <article class="card">
+    <a class="thumb" href="{{ url_for('product_detail', product_id=p.id) }}" style="--hue: {{ (p.id * 47) % 360 }}deg">
+      <span class="thumb-text">{{ p.name[:2] | upper }}</span>
+    </a>
+    <div class="card-body">
+      <span class="cat">{{ p.category }}</span>
+      <h3><a href="{{ url_for('product_detail', product_id=p.id) }}">{{ p.name }}</a></h3>
+      <p class="rating">★ {{ p.rating }} &nbsp;·&nbsp; {{ p.stock }} in stock</p>
+      <p class="price">{{ inr(p.price) }} {% if p.old_price %}<s>{{ inr(p.old_price) }}</s>{% endif %}</p>
+      <form action="{{ url_for('cart_add', product_id=p.id) }}" method="post">
+        <input type="hidden" name="next" value="{{ url_for('index') }}">
+        <button class="btn" type="submit" {% if p.stock == 0 %}disabled{% endif %}>{{ 'Out of stock' if p.stock == 0 else 'Add to Cart' }}</button>
+      </form>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<p class="empty">No products match your search. <a href="{{ url_for('index') }}">Show everything</a></p>
+{% endif %}
+{% endblock %}

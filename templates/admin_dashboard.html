@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — ShopFlow{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<p><a class="btn" href="{{ url_for('admin_products') }}">Manage Products</a>
+<a class="btn ghost" href="{{ url_for('admin_orders') }}">View All Orders</a></p>
+<div class="stats">
+  <div class="stat"><strong>{{ inr(total_sales) }}</strong><span>Total sales</span></div>
+  <div class="stat"><strong>{{ order_count }}</strong><span>Orders</span></div>
+  <div class="stat"><strong>{{ product_count }}</strong><span>Products</span></div>
+  <div class="stat"><strong>{{ user_count }}</strong><span>Users</span></div>
+</div>
+<h2>Top selling products</h2>
+{% if top_products %}
+<ul>{% for t in top_products %}<li>{{ t.product_name }} — {{ t.sold }} sold, {{ inr(t.revenue) }}</li>{% endfor %}</ul>
+{% else %}<p class="muted">No sales yet.</p>{% endif %}
+<h2>Low stock (15 or fewer)</h2>
+{% if low_stock %}
+<table class="table"><thead><tr><th>Product</th><th>Category</th><th>Stock</th></tr></thead><tbody>
+{% for p in low_stock %}<tr><td>{{ p.name }}</td><td>{{ p.category }}</td><td><strong>{{ p.stock }}</strong></td></tr>{% endfor %}
+</tbody></table>
+{% else %}<p class="muted">No low-stock products.</p>{% endif %}
+<h2>Recent orders</h2>
+{% if recent_orders %}
+<table class="table"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody>
+{% for o in recent_orders %}<tr><td>#{{ o.id }}</td><td>{{ o.customer_name }}</td><td>{{ inr(o.total) }}</td><td>{{ o.status }}</td></tr>{% endfor %}
+</tbody></table>
+{% else %}<p class="muted">No orders yet.</p>{% endif %}
+{% endblock %}

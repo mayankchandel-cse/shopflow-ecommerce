@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Order Placed — ShopFlow{% endblock %}
+{% block content %}
+<div class="success-box">
+  <h1>Order placed! Thank you.</h1>
+  <p>Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+  <p>Total: <strong>{{ inr(order.total) }}</strong> &nbsp;·&nbsp; Payment: {{ order.payment_method }} &nbsp;·&nbsp; Status: {{ order.status }}</p>
+  <p>Deliver to: {{ order.customer_name }}, {{ order.address }}, {{ order.city }} — {{ order.pincode }}</p>
+  <h2>Items</h2>
+  <ul>
+  {% for item in items %}
+    <li>{{ item.quantity }} × {{ item.product_name }} — {{ inr(item.price * item.quantity) }}</li>
+  {% endfor %}
+  </ul>
+  <p><a class="btn" href="{{ url_for('index') }}">Continue Shopping</a>
+  <a class="btn ghost" href="{{ url_for('my_orders') }}">View My Orders</a></p>
+</div>
+{% endblock %}

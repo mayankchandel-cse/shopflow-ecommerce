@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}All Orders — ShopFlow{% endblock %}
+{% block content %}
+<h1>All Orders</h1>
+<p><a class="btn ghost" href="{{ url_for('admin_dashboard') }}">← Dashboard</a></p>
+{% if orders %}
+<table class="table">
+  <thead><tr><th>Order</th><th>Customer</th><th>Email</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for o in orders %}
+    <tr><td>#{{ o.id }}</td><td>{{ o.customer_name }}</td><td>{{ o.customer_email }}</td><td>{{ o.created_at }}</td><td>{{ inr(o.total) }}</td><td>{{ o.status }}</td>
+    <td><a href="{{ url_for('admin_order_detail', order_id=o.id) }}">View</a></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="empty">No orders yet.</p>{% endif %}
+{% endblock %}
